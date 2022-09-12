@@ -1,0 +1,34 @@
+.workspace {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  .explorer {
+    width: 320px;
+    height: 100%;
+    overflow: auto;
+    flex-wrap: wrap;
+    .template-item {
+      width: 60px;
+      display: inline-block;
+      margin-right: 10px;
+      margin-bottom: 10px;
+      .name {
+        text-align: center;
+        font-size: 0.8rem;
+      }
+      .template-preview {
+        width: 60px;
+        height: 60px;
+        overflow: hidden;
+        border: 1px solid #555;
+        white-space: nowrap;
+      }
+    }
+  }
+  .editor {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    border-left: 1px solid #ccc;
+  }
+}
