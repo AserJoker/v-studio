@@ -4,19 +4,15 @@ import { IWidgetDefinition, SLOT_RENDER } from "../types";
 
 const Root: IWidgetDefinition = {
   name: "Root",
-  slots: [
-    {
+  slots: {
+    default: {
       width: "",
       height: "fit-content"
     }
-  ],
+  },
   render(props, slots) {
-    const _slots = slots as SLOT_RENDER[];
-    return React.createElement(
-      _Root,
-      props,
-      _slots.map((slot) => slot({}))
-    );
+    const _slots = slots as { default: SLOT_RENDER };
+    return React.createElement(_Root, props, _slots.default?.({}));
   },
   preview() {
     return React.createElement("div", {}, "root");

@@ -7,13 +7,14 @@ export interface ISimpleField extends IBaseField {
 }
 export interface IFunctionField extends IBaseField {
   type: "function";
-  getter?: string;
   // eslint-disable-next-line @typescript-eslint/ban-types
   func?: Function;
+  getter?: string;
 }
 export interface IObjectField extends IBaseField {
   type: "object";
-  prototype: Record<string, IField>;
+  prototype?: Record<string, IField>;
+  value?: Record<string, unknown>;
 }
 export interface IArrayField extends IBaseField {
   type: "array";

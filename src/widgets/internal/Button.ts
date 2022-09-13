@@ -13,14 +13,21 @@ const Button: IWidgetDefinition = {
     const _slots = slots as {
       default: SLOT_RENDER;
     };
+
     return React.createElement(
       "button",
       { key: props.key as string },
-      _slots.default?.({})
+      _slots.default?.({}) || (props.text as string)
     );
   },
   preview() {
     return React.createElement("button", {}, "button");
+  },
+  mock: {
+    text: {
+      type: "string",
+      getter: "button"
+    }
   }
 };
 export default Button;

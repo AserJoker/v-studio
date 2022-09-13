@@ -1,82 +1,105 @@
 import React, { useRef, useState } from "react";
-import { Renderer, Store } from "../../runtime";
-import { PreviewContext } from "../../context";
-import { IWidget } from "../../types";
+import { EditorContext } from "../../context";
+import { IPlaceholder, ISelector } from "../../types";
+import { Editor, Store } from "../../runtime";
 import "./index.less";
-interface IPlaceholder {
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-  onDrop: (widget: IWidget) => void;
-}
 const Preview: React.FC = () => {
-  const mask = useRef<HTMLDivElement>(null);
+  const [selectors, setSelectors] = useState<Record<string, ISelector>>({});
   const [placeholders, setPlaceholders] = useState<
     Record<string, IPlaceholder>
   >({});
-  const update = (
-    id: string,
-    x: number,
-    y: number,
-    w: number,
-    h: number,
-    onDrop: (widget: IWidget) => void
-  ) => {
+  const [focus, setFocus] = useState("");
+  const mask = useRef<HTMLDivElement>(null);
+  const updateElement = (name: string, selector: ISelector) => {
     const dom = mask.current;
-    if (dom) {
-      if (!placeholders[id]) {
-        const domrc = dom.getBoundingClientRect();
-        const rc = {
-          x: x - domrc.x,
-          y: y - domrc.y,
-          w,
-          h
-        };
-        setPlaceholders({
-          ...placeholders,
-          [id]: {
-            ...rc,
-            onDrop
-          }
-        });
-      }
+    if (!selectors[name] && dom) {
+      const rc = dom.getBoundingClientRect();
+      setSelectors({
+        ...selectors,
+        [name]: { ...selector, x: selector.x - rc.x, y: selector.y - rc.y }
+      });
+    }
+  };
+  const updatePlaceholder = (name: string, placeholder: IPlaceholder) => {
+    const dom = mask.current;
+    if (!placeholders[name] && dom) {
+      const rc = dom.getBoundingClientRect();
+      setPlaceholders({
+        ...placeholders,
+        [name]: {
+          ...placeholder,
+          x: placeholder.x - rc.x,
+          y: placeholder.y - rc.y
+        }
+      });
     }
   };
   return (
-    <PreviewContext.Provider value={{ update }}>
+    <EditorContext.Provider value={{ updateElement, updatePlaceholder }}>
       <div className="preview">
-        {Renderer.getInstance().drawWidgetEdit(
-          Store.getInstance().getRoot(),
-          {}
-        )}
+        {Editor.getInstance().drawWidget(Store.getInstance().getRoot(), {})}
         <div className="mask" ref={mask}>
-          {Object.keys(placeholders).map((id) => {
-            return (
-              <div
-                key={id}
-                style={{
-                  position: "absolute",
-                  left: placeholders[id].x,
-                  top: placeholders[id].y,
-                  width: placeholders[id].w,
-                  height: placeholders[id].h
-                }}
-                onDragOver={(e) => {
-                  e.preventDefault();
-                }}
-                onDrop={(e) => {
-                  const name = e.dataTransfer.getData("widget");
-                  placeholders[id].onDrop(
-                    Store.getInstance().createWidget(name)
-                  );
-                }}
-              />
-            );
-          })}
+          {Object.keys(selectors)
+            .filter((name) => selectors[name])
+            .map((name) => {
+              const selector = selectors[name];
+              return (
+                <div
+                  key={name}
+                  data-name="name"
+                  style={{
+                    position: "absolute",
+                    top: selector.y,
+                    left: selector.x,
+                    width: selector.width,
+                    height: selector.height,
+                    zIndex: selector.zIndex,
+                    border: focus === name ? "1px solid #0cf" : "none",
+                    boxSizing: "border-box"
+                  }}
+                  onClick={(e) => {
+                    selector.onSelect();
+                    e.stopPropagation();
+                    setFocus(name);
+                  }}
+                />
+              );
+            })}
+          {Object.keys(placeholders)
+            .filter((name) => placeholders[name])
+            .map((name) => {
+              const placeholder = placeholders[name];
+              return (
+                <div
+                  key={name}
+                  data-name="name"
+                  style={{
+                    position: "absolute",
+                    top: placeholder.y,
+                    left: placeholder.x,
+                    width: placeholder.width,
+                    height: placeholder.height,
+                    zIndex: placeholder.zIndex
+                  }}
+                  onDrop={(e) => {
+                    const name = e.dataTransfer.getData("widget");
+                    placeholder.onDrop(Store.getInstance().createWidget(name));
+                  }}
+                  onDragOver={(e) => e.preventDefault()}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const selector = selectors[placeholder.host];
+                    if (selector) {
+                      selector.onSelect();
+                      setFocus(placeholder.host);
+                    }
+                  }}
+                />
+              );
+            })}
         </div>
       </div>
-    </PreviewContext.Provider>
+    </EditorContext.Provider>
   );
 };
 export default Preview;

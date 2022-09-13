@@ -1,6 +1,6 @@
 import React from "react";
 import { IAttribute, IField, IWidget, SLOT_RENDER } from "../types";
-import { Store } from "./Store";
+import { bus } from "./bus";
 
 export class Renderer {
   private static _instance: Renderer;
@@ -14,32 +14,41 @@ export class Renderer {
   private _renderCounter = 0;
   public drawWidget(
     widget: IWidget,
-    ctx: Record<string, unknown>
+    ctx: Record<string, unknown>,
+    path: string[] = []
   ): React.ReactNode {
     const context = { ...this._context, ...ctx };
     const { attrs, definition, slots } = widget;
-    const props = this.execAttributes(attrs, context);
+    const { mock = {} } = definition;
+    const props = this.execAttributes({ ...mock, ...attrs }, context);
+    widget.key = `${widget.identity}-${++this._renderCounter}`;
     if (!props.key) {
-      props.key = `${widget.identity}-${++this._renderCounter}`;
+      props.key = widget.key;
     }
-    return definition.render(props, this.drawSlots(slots));
+    return definition.render(
+      props,
+      this.drawSlots(slots, [...path, props.key as string])
+    );
   }
-  private drawSlots(slots: Record<string, IWidget> | IWidget[]) {
+  private drawSlots(
+    slots: Record<string, IWidget> | IWidget[],
+    path: string[]
+  ) {
     return Array.isArray(slots)
-      ? this.drawArraySlots(slots)
-      : this.drawObjectSlots(slots);
+      ? this.drawArraySlots(slots, path)
+      : this.drawObjectSlots(slots, path);
   }
-  private drawArraySlots(slots: IWidget[]): SLOT_RENDER[] {
+  private drawArraySlots(slots: IWidget[], path: string[]): SLOT_RENDER[] {
     return slots.map((slot) => {
       return (props: Record<string, unknown>) => {
-        return this.drawWidget(slot, { props });
+        return this.drawWidget(slot, { props }, path);
       };
     });
   }
-  private drawObjectSlots(slots: Record<string, IWidget>) {
+  private drawObjectSlots(slots: Record<string, IWidget>, path: string[]) {
     return Object.keys(slots).reduce((res, name) => {
       res[name] = (props: Record<string, unknown>) => {
-        return this.drawWidget(slots[name], { props });
+        return this.drawWidget(slots[name], { props }, path);
       };
       return res;
     }, {} as Record<string, SLOT_RENDER>);
@@ -53,7 +62,13 @@ export class Renderer {
   }
   private execField(field: IField, ctx: Record<string, unknown>): unknown {
     if (field.type === "object") {
-      return this.execAttributes(field.prototype, ctx);
+      if (field.prototype) {
+        return this.execAttributes(field.prototype, ctx);
+      }
+      if (field.value) {
+        return field.value;
+      }
+      return null;
     } else if (field.type === "array") {
       if (field.items) {
         return field.items.map((item) => this.execField(item, ctx));
@@ -66,104 +81,8 @@ export class Renderer {
       return getter(ctx);
     }
   }
-  public drawWidgetEdit(
-    widget: IWidget,
-    ctx: Record<string, unknown>,
-    path: string[] = []
-  ): React.ReactNode {
-    const context = { ...this._context, ...ctx };
-    const { attrs, definition, slots } = widget;
-    const { mock = {} } = definition;
-    const props = this.execAttributes({ ...mock, ...attrs }, context);
-    if (!props.key) {
-      props.key = `${widget.identity}-${++this._renderCounter}`;
-    }
-    props.__path = path;
-    props["data-identity"] = widget.identity;
-    const store = Store.getInstance();
-    if (Array.isArray(definition.slots)) {
-      const _slots = slots as IWidget[];
-      if (
-        !_slots.length ||
-        _slots[_slots.length - 1].definition.name !== "Slot"
-      ) {
-        const slot = store.createWidget("Slot");
-        _slots.push(slot);
-        slot.attrs.width = {
-          type: "string",
-          getter: definition.slots[0].width
-        };
-        slot.attrs.height = {
-          type: "string",
-          getter: definition.slots[0].height
-        };
-        slot.attrs.onDrop = {
-          type: "function",
-          func: (w: IWidget) => {
-            const index = _slots.findIndex((s) => s === slot);
-            if (index !== -1) {
-              _slots[index] = w;
-              this.notify();
-            }
-          }
-        };
-      }
-    } else {
-      const _slots = slots as Record<string, IWidget>;
-      const _dslots = definition.slots;
-      Object.keys(_dslots).forEach((name) => {
-        if (!_slots[name]) {
-          _slots[name] = store.createWidget("Slot");
-          _slots[name].attrs.width = {
-            type: "string",
-            getter: _dslots[name].width
-          };
-          _slots[name].attrs.height = {
-            type: "string",
-            getter: _dslots[name].height
-          };
-          _slots[name].attrs.onDrop = {
-            type: "function",
-            func: (w: IWidget) => {
-              _slots[name] = w;
-              this.notify();
-            }
-          };
-        }
-      });
-    }
-    return definition.render(
-      props,
-      this.drawSlotsEdit(slots, [...path, widget.identity])
-    );
-  }
-  private drawSlotsEdit(
-    slots: Record<string, IWidget> | IWidget[],
-    path: string[]
-  ) {
-    return Array.isArray(slots)
-      ? this.drawArraySlotsEdit(slots, path)
-      : this.drawObjectSlotsEdit(slots, path);
-  }
-  private drawArraySlotsEdit(slots: IWidget[], path: string[]): SLOT_RENDER[] {
-    return slots.map((slot) => {
-      return (props: Record<string, unknown>) => {
-        return this.drawWidgetEdit(slot, { props }, path);
-      };
-    });
-  }
-  private drawObjectSlotsEdit(slots: Record<string, IWidget>, path: string[]) {
-    return Object.keys(slots).reduce((res, name) => {
-      res[name] = (props: Record<string, unknown>) => {
-        return this.drawWidgetEdit(slots[name], { props }, path);
-      };
-      return res;
-    }, {} as Record<string, SLOT_RENDER>);
-  }
-
-  public onChange?: () => void;
 
   public notify() {
-    this.onChange && this.onChange();
+    bus.emit("update");
   }
 }

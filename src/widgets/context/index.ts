@@ -1,1 +1,1 @@
-export { default as PreviewContext } from "./preview";
+export { default as EditorContext } from "./EditorContext";

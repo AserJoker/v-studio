@@ -1,28 +1,17 @@
 import React, { useEffect, useState } from "react";
-import Widget, { Preview } from "../../widgets";
+import Widget, { Preview } from "@widgets";
 import "./index.less";
 
 Widget.store.init();
-const root = Widget.store.getRoot();
-const button = Widget.store.createWidget("Button");
-const text = Widget.store.createWidget("Text");
-Widget.setAttribute(text, {
-  text: "hello world"
-});
-Widget.append(root, text);
-Widget.append(root, button);
 
 const Workspace: React.FC = () => {
   const [key, setKey] = useState(`${Date.now()}`);
   useEffect(() => {
-    Widget.renderer.onChange = () => {
+    return Widget.bus.on("update", () => {
       setTimeout(() => {
         setKey(`${Date.now()}`);
       }, 1);
-    };
-    return () => {
-      Widget.renderer.onChange = undefined;
-    };
+    });
   }, []);
   return (
     <div className="workspace">
@@ -42,7 +31,6 @@ const Workspace: React.FC = () => {
             </div>
           );
         })}
-        <button onClick={() => setKey(key + 1)}>update</button>
       </div>
       <div className="editor">
         <Preview key={`${key}`} />

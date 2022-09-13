@@ -5,7 +5,7 @@ const Col: IWidgetDefinition = {
   name: "Col",
   slots: {
     default: {
-      width: "fit-content",
+      width: "120px",
       height: "fit-content"
     }
   },

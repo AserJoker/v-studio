@@ -25,7 +25,8 @@ export class Store {
       definition: def,
       attrs: {},
       slots: Array.isArray(def.slots) ? [] : {},
-      identity: `${def.name}-${++this._counter}`
+      identity: `${def.name}-${++this._counter}`,
+      key: ""
     };
     return w;
   }
