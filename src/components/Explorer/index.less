@@ -41,8 +41,11 @@
   }
   &-content {
     min-width: 20rem;
-    overflow: auto;
     height: 100%;
+    border-right: 1px solid var(--font-color-0);
+    &-body {
+      overflow: auto;
+    }
     &:hover {
       .explorer-action {
         visibility: unset;

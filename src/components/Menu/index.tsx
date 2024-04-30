@@ -74,7 +74,7 @@ const MenuItem: React.FC<IMenuItemProps> = ({
             bottom: popupDirection === "bottom",
           })}
         >
-          {children.map((item) => {
+          {children.map((item, index) => {
             const { name } = item;
             if (name) {
               return (
@@ -90,7 +90,9 @@ const MenuItem: React.FC<IMenuItemProps> = ({
                 />
               );
             } else {
-              return <div className="menu-popup-divider" />;
+              return (
+                <div key={`divider-${index}`} className="menu-popup-divider" />
+              );
             }
           })}
         </div>
@@ -121,10 +123,10 @@ const Menu: React.FC = () => {
   }, []);
   return (
     <div className="menu" onClick={(e) => e.stopPropagation()}>
-      {items.map((item) => (
+      {items.map((item, index) => (
         <MenuItem
           item={item}
-          key={item.name}
+          key={item.name ?? `${index}`}
           onActive={(act) => {
             setActivePath([...act]);
           }}

@@ -1,13 +1,35 @@
 .divider {
-  width: 11px;
-  height: 100%;
   position: absolute;
-  cursor: e-resize;
   display: flex;
   justify-content: center;
-  &-content {
+  .divider-content {
     background-color: var(--font-color-0);
-    width: 1px;
-    height: 100%;
   }
+  &.row,
+  &.row-revert {
+    width: 5px;
+    height: 100%;
+    .divider-content {
+      width: 1px;
+      height: 100%;
+    }
+    cursor: e-resize;
+  }
+  &.column,
+  &.column-revert {
+    width: 100%;
+    height: 5px;
+    .divider-content {
+      height: 1px;
+      width: 100%;
+    }
+    cursor: n-resize;
+  }
+}
+.divier-mask {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
 }

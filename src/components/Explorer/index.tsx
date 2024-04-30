@@ -95,7 +95,7 @@ const Explorer: React.FC = () => {
                 })}
               </div>
             </div>
-            {explorer?.content()}
+            <div className="explorer-content-body">{explorer?.content()}</div>
           </Vertical>
         )}
         {current && (

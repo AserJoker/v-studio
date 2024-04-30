@@ -19,12 +19,7 @@ export const Application: React.FC<{ theme?: string }> = ({
   }, [theme]);
   return (
     <ConfigProvider>
-      <Vertical
-        className="application"
-        onContextMenu={(e) => e.preventDefault()}
-        onDragOver={(e) => e.preventDefault()}
-        onDrop={(e) => e.preventDefault()}
-      >
+      <Vertical className="application">
         <Header />
         <Horizontal className="body">
           <Explorer />
