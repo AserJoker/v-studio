@@ -48,10 +48,10 @@ export const Divider: React.FC<{
         }}
         className={classname("divider", direction)}
         style={{
-          left: direction === "row" ? offset - 2 : undefined,
-          top: direction === "column" ? offset - 2 : undefined,
-          right: direction === "row-revert" ? offset - 2 : undefined,
-          bottom: direction === "column-revert" ? offset - 2 : undefined,
+          left: direction === "row" ? offset - 5 : undefined,
+          top: direction === "column" ? offset - 5 : undefined,
+          right: direction === "row-revert" ? offset - 5 : undefined,
+          bottom: direction === "column-revert" ? offset - 5 : undefined,
         }}
       >
         <div className="divider-content" />

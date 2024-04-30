@@ -12,7 +12,7 @@ import Console from "../Console";
 import Toolbox from "../Toolbox";
 import StatusBar from "../StatusBar";
 export const Application: React.FC<{ theme?: string }> = ({
-  theme = "tokyo-night",
+  theme = "monokai",
 }) => {
   useEffect(() => {
     document.body.className = `theme-${theme}`;

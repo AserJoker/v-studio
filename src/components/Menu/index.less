@@ -8,32 +8,37 @@
     text-align: center;
     position: relative;
     white-space: nowrap;
+    background-color: var(--menu-background-color);
+    cursor: pointer;
     &-title {
       display: flex;
       justify-content: center;
     }
-    &:hover {
-      background-color: var(--background-color-0-hover);
-    }
-    &.active {
-      background-color: var(--background-color-0-hover);
-      color: var(--font-color-0-hover);
-    }
     .menu-popup {
       position: absolute;
-      background-color: var(--background-color-1);
+      background-color: var(--menu-background-color);
       display: flex;
       flex-direction: column;
       width: fit-content;
-      padding: 0.5rem 0;
+      padding: 0.5rem 0.125rem;
+      border: 1px solid var(--menu-border-color);
       &-divider {
         height: 1px;
-        background-color: var(--font-color-0);
+        background-color: var(--font-color-global);
         margin: 0.5rem 0;
       }
       .menu-item {
         text-align: left;
         padding: 0 1rem;
+        border-radius: 5px;
+        &:hover {
+          background-color: var(--menu-background-color-active);
+          color: var(--font-color-global-active);
+        }
+        &.active {
+          background-color: var(--menu-background-color-active);
+          color: var(--font-color-global-active);
+        }
         &-title {
           justify-content: space-between;
           min-width: 8rem;

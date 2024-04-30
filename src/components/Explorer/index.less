@@ -14,13 +14,13 @@
     user-select: none;
     font-family: "iconfont";
     &:hover {
-      color: var(--font-color-0-hover);
-      background-color: var(--background-color-0-hover);
+      color: var(--font-color-global-active);
+      background-color: var(--background-color-global-active);
     }
     &.active {
-      color: var(--font-color-0-hover);
-      background-color: var(--background-color-0-hover);
-      border-bottom: 1px solid var(--border-color-0-active);
+      color: var(--font-color-global-active);
+      background-color: var(--background-color-global-active);
+      border-bottom: 1px solid var(--border-color-global);
     }
   }
   &-action-bar {
@@ -33,16 +33,10 @@
     height: 1.5rem;
     text-align: center;
     cursor: pointer;
-    visibility: hidden;
-    &:hover {
-      color: var(--font-color-0-hover);
-      background-color: var(--background-color-1-hover);
-    }
   }
   &-content {
     min-width: 20rem;
     height: 100%;
-    border-right: 1px solid var(--font-color-0);
     &-body {
       overflow: auto;
     }
@@ -56,7 +50,7 @@
       line-height: 1.5rem;
       padding: 0 0.25rem;
       font-weight: bold;
-      background-color: var(--background-color-1);
+      background-color: var(--background-color-primary);
       user-select: none;
       display: flex;
       align-items: center;
