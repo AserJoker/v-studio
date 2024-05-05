@@ -29,12 +29,14 @@ export const Divider: React.FC<{
               } else if (direction === "row-revert") {
                 onChange(start - e.pageX + startOffset);
               }
+              e.preventDefault();
             };
-            const onMouseUp = () => {
+            const onMouseUp = (e: MouseEvent) => {
               div.style.cursor = "unset";
               div.style.display = "none";
               document.removeEventListener("mouseup", onMouseUp);
               document.removeEventListener("mousemove", onMouseMove);
+              e.preventDefault();
             };
             document.addEventListener("mousemove", onMouseMove);
             document.addEventListener("mouseup", onMouseUp);
@@ -45,6 +47,7 @@ export const Divider: React.FC<{
             }
             div.style.display = "block";
           }
+          e.preventDefault();
         }}
         className={classname("divider", direction)}
         style={{
