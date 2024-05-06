@@ -4,7 +4,12 @@ import Tree from "../Tree";
 const data = [
   {
     name: "/",
-    content: () => "/",
+    content: () => (
+      <div className="folder">
+        <span>/</span>
+        <span className="iconfont">&#xe63a;</span>
+      </div>
+    ),
     children: [
       {
         name: "usr",
@@ -13,7 +18,6 @@ const data = [
           {
             name: "aserjoker",
             content: () => "aserjoker",
-            children: [],
           },
         ],
       },
@@ -24,12 +28,10 @@ const data = [
           {
             name: "x86",
             content: () => "x86",
-            children: [],
           },
           {
             name: "x86_64",
             content: () => "x86_64",
-            children: [],
           },
         ],
       },
@@ -40,12 +42,10 @@ const data = [
           {
             name: "ls",
             content: () => "ls",
-            children: [],
           },
           {
             name: "rm",
             content: () => "rm",
-            children: [],
           },
         ],
       },
@@ -55,7 +55,13 @@ const data = [
 const FileExplorer: React.FC = () => {
   return (
     <div className="file-explorer">
-      <Tree nodes={data} />
+      <Tree
+        nodes={data}
+        onContextMenu={(e, node) => {
+          console.log(node);
+          e.preventDefault();
+        }}
+      />
     </div>
   );
 };

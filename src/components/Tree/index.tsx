@@ -1,61 +1,95 @@
 import { useState } from "react";
 import "./index.less";
-interface ITreeNode {
+import { classname } from "@/util";
+export interface ITreeNode {
   content: () => JSX.Element | string | null;
-  children: ITreeNode[];
+  children?: ITreeNode[];
   name: string;
+}
+interface ITreeNodeProps extends ITreeNode {
+  path: string[];
+  onContextMenu?: (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    path?: string[]
+  ) => void;
 }
 interface ITreeProps {
   nodes: ITreeNode[];
+  onContextMenu?: (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    path?: string[]
+  ) => void;
 }
-const TreeNode: React.FC<ITreeNode & { path: string[] }> = ({
-  content,
-  children,
+const TreeNode: React.FC<ITreeNodeProps> = ({
   path,
-  name,
+  onContextMenu,
+  ...node
 }) => {
+  const { name, children, content } = node;
   const [isFolder, toggleFolder] = useState(false);
   return (
     <>
       <div className="tree-node">
-        {path.map((name) => {
-          return (
+        <div
+          className="tree-node-content"
+          style={{ paddingLeft: `${path.length - 1}rem` }}
+          onContextMenu={(e) => {
+            onContextMenu?.(e, path);
+            e.stopPropagation();
+          }}
+        >
+          {children !== undefined ? (
+            <div
+              className="tree-node-folder"
+              onClick={(e) => {
+                toggleFolder(!isFolder);
+                e.preventDefault();
+              }}
+            >
+              <div
+                className={classname("tree-node-folder-action", { isFolder })}
+              >
+                <span className="iconfont">&#xe665;</span>
+              </div>
+            </div>
+          ) : (
             <div className="tree-node-placeholder" key={name}>
               <div className="tree-node-placeholder-line" />
             </div>
-          );
-        })}
-        {children.length !== 0 ? (
-          <div
-            className="tree-node-folder"
-            onClick={(e) => {
-              toggleFolder(!isFolder);
-              e.preventDefault();
-            }}
-          >
-            <div className="tree-node-folder-action">
-              {isFolder ? "-" : "+"}
-            </div>
-          </div>
-        ) : (
-          <div className="tree-node-placeholder" key={name}>
-            <div className="tree-node-placeholder-line" />
+          )}
+          <div className="tree-node-content">{content()}</div>
+        </div>
+        {!isFolder && children !== undefined && (
+          <div className="tree-nodoe-children">
+            {children.map((c) => (
+              <TreeNode
+                {...c}
+                path={[...path, c.name]}
+                key={c.name}
+                onContextMenu={onContextMenu}
+              />
+            ))}
           </div>
         )}
-        <div className="tree-node-content">{content()}</div>
       </div>
-      {!isFolder &&
-        children.map((c) => (
-          <TreeNode {...c} path={[...path, name]} key={c.name} />
-        ))}
     </>
   );
 };
-const Tree: React.FC<ITreeProps> = ({ nodes }) => {
+const Tree: React.FC<ITreeProps> = ({ nodes, onContextMenu }) => {
   return (
-    <div className="tree">
+    <div
+      className="tree"
+      onContextMenu={(e) => {
+        onContextMenu?.(e);
+      }}
+    >
       {nodes.map((node) => (
-        <TreeNode {...node} path={[]} key={node.name} />
+        <TreeNode
+          {...node}
+          path={[node.name]}
+          key={node.name}
+          onContextMenu={onContextMenu}
+        />
       ))}
     </div>
   );
