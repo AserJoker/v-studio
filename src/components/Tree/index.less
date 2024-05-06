@@ -14,6 +14,10 @@
         background-color: var(--background-color-primary-active);
         color: var(--font-color-global-active);
       }
+      &.active {
+        background-color: var(--background-color-primary-active);
+        color: var(--font-color-global-active);
+      }
       .tree-node-placeholder {
         width: 1rem;
       }
@@ -30,6 +34,45 @@
           transition: all 0.125s linear;
           &.isFolder {
             transform: rotate(0deg);
+          }
+        }
+      }
+    }
+    &-children {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.125s linear;
+      &-item {
+        position: relative;
+        &-column {
+          visibility: hidden;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 1.5rem;
+          height: 100%;
+          &.last {
+            height: 1.5rem;
+          }
+          &-line {
+            background-color: var(--border-color-global);
+            width: 1px;
+            height: 100%;
+            z-index: 10;
+          }
+        }
+      }
+    }
+  }
+  &:hover {
+    .tree-node {
+      &-children {
+        &-item {
+          &-column {
+            visibility: visible;
           }
         }
       }

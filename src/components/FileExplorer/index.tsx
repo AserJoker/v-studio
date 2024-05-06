@@ -61,6 +61,7 @@ const FileExplorer: React.FC = () => {
           console.log(node);
           e.preventDefault();
         }}
+        dragable
       />
     </div>
   );
