@@ -1,15 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import "./index.less";
-import Tree from "../Tree";
-const data = [
+import Tree, { ITreeNode } from "../Tree";
+const data: ITreeNode[] = [
   {
     name: "/",
-    content: () => (
-      <div className="folder">
-        <span>/</span>
-        <span className="iconfont">&#xe63a;</span>
-      </div>
-    ),
+    content: () => "/",
     children: [
       {
         name: "usr",
@@ -53,15 +48,40 @@ const data = [
   },
 ];
 const FileExplorer: React.FC = () => {
+  const [nodes, setNodes] = useState(data);
+  const getItem = (path: string[]): ITreeNode | undefined => {
+    let item = nodes.find((n) => n.name === path[0]);
+    for (let index = 1; index < path.length; index++) {
+      if (!item || !item.children) {
+        return undefined;
+      }
+      item = item.children.find((c) => c.name === path[index]);
+    }
+    return item;
+  };
   return (
     <div className="file-explorer">
       <Tree
-        nodes={data}
-        onContextMenu={(e, node) => {
-          console.log(node);
-          e.preventDefault();
-        }}
+        nodes={nodes}
         dragable
+        onDrop={(srcp, itemp) => {
+          const src = getItem(srcp);
+          const parent = getItem(itemp.slice(0, itemp.length - 1));
+          if (parent === src) {
+            return;
+          }
+          if (parent && parent.children && src && src.children) {
+            const index = parent.children.findIndex(
+              (c) => c.name === itemp[itemp.length - 1]
+            );
+            if (index !== -1) {
+              const item = parent.children[index];
+              parent.children.splice(index, 1);
+              src.children.push(item);
+              setNodes([...nodes]);
+            }
+          }
+        }}
       />
     </div>
   );

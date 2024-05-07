@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import "./index.less";
 import { classname } from "@/util";
 export interface ITreeNode {
@@ -12,6 +12,7 @@ interface ITreeNodeProps extends ITreeNode {
     e: React.MouseEvent<HTMLDivElement, MouseEvent>,
     path?: string[]
   ) => void;
+  onDrop?: (src: string[], item: string[]) => void;
   dragable?: boolean;
 }
 interface ITreeProps {
@@ -20,17 +21,20 @@ interface ITreeProps {
     e: React.MouseEvent<HTMLDivElement, MouseEvent>,
     path?: string[]
   ) => void;
+  onDrop?: (src: string[], item: string[]) => void;
   dragable?: boolean;
 }
 const TreeNode: React.FC<ITreeNodeProps> = ({
   path,
   onContextMenu,
   dragable,
+  onDrop,
   ...node
 }) => {
   const { children, content } = node;
   const [isFolder, toggleFolder] = useState(false);
   const [active, toggleActive] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
   return (
     <>
       <div className="tree-node">
@@ -51,7 +55,7 @@ const TreeNode: React.FC<ITreeNodeProps> = ({
             e.preventDefault();
             toggleActive(false);
             const data = e.dataTransfer.getData("text/plain");
-            console.log(data.split("."));
+            onDrop?.(path, data.split("."));
             e.stopPropagation();
           }}
           onDragEnter={(e) => {
@@ -65,6 +69,15 @@ const TreeNode: React.FC<ITreeNodeProps> = ({
             e.preventDefault();
             e.stopPropagation();
           }}
+          onDragStart={(e) => {
+            e.dataTransfer.setData("text/plain", path.join("."));
+            e.dataTransfer.effectAllowed = "all";
+            e.dataTransfer.dropEffect = "copy";
+            const div = ref.current as HTMLDivElement;
+            const rc = div.getBoundingClientRect();
+            e.dataTransfer.setDragImage(div, 0, rc.height);
+          }}
+          draggable
         >
           {children !== undefined ? (
             <div className="tree-node-folder">
@@ -77,15 +90,7 @@ const TreeNode: React.FC<ITreeNodeProps> = ({
           ) : (
             <div style={{ width: "1.5rem" }} />
           )}
-          <div
-            className={classname("tree-node-content")}
-            onDragStart={(e) => {
-              e.dataTransfer.setData("text/plain", path.join("."));
-              e.dataTransfer.effectAllowed = "all";
-              e.dataTransfer.dropEffect = "copy";
-            }}
-            draggable
-          >
+          <div className={classname("tree-node-content-text")} ref={ref}>
             {content()}
           </div>
         </div>
@@ -102,6 +107,7 @@ const TreeNode: React.FC<ITreeNodeProps> = ({
                   key={c.name}
                   onContextMenu={onContextMenu}
                   dragable={dragable}
+                  onDrop={onDrop}
                 />
               </div>
             ))}
@@ -111,17 +117,17 @@ const TreeNode: React.FC<ITreeNodeProps> = ({
     </>
   );
 };
-const Tree: React.FC<ITreeProps> = ({ nodes, onContextMenu, dragable }) => {
+const Tree: React.FC<ITreeProps> = ({
+  nodes,
+  onContextMenu,
+  dragable,
+  onDrop,
+}) => {
   return (
     <div
       className="tree"
       onContextMenu={(e) => {
         onContextMenu?.(e);
-      }}
-      onDragOver={(e) => {
-        e.dataTransfer.dropEffect = "copy";
-        e.preventDefault();
-        e.stopPropagation();
       }}
     >
       {nodes.map((node) => (
@@ -131,6 +137,7 @@ const Tree: React.FC<ITreeProps> = ({ nodes, onContextMenu, dragable }) => {
           key={node.name}
           onContextMenu={onContextMenu}
           dragable={dragable}
+          onDrop={onDrop}
         />
       ))}
     </div>
