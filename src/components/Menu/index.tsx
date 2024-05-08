@@ -1,10 +1,10 @@
-import { Application, IMenuItem, MenuManager } from "@/studio";
+import { Runtime, IMenuItem, MenuManager } from "@/studio";
 import React, { useEffect, useState } from "react";
 import "./index.less";
 import MenuItem from "../MenuItem";
 
 const Menu: React.FC = () => {
-  const theApp = Application.theApp;
+  const theApp = Runtime.theApp;
   const [items, setItems] = useState<IMenuItem[]>(theApp.$menu.getMenus());
   useEffect(
     () =>

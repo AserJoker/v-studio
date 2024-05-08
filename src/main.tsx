@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import "./renderer";
 import { Application } from "@/components";
-import { Application as StudioApplication } from "@/studio";
+import { Runtime as StudioApplication } from "@/studio";
 import FileExplorer from "@/components/FileExplorer";
 
 StudioApplication.theApp.$explorers.setExplorer({

@@ -1,4 +1,4 @@
-import { Application, ContextMenuManager, IMenuItem } from "@/studio";
+import { Runtime, ContextMenuManager, IMenuItem } from "@/studio";
 import React, { useEffect, useState } from "react";
 import "./index.less";
 import MenuItem from "../MenuItem";
@@ -18,7 +18,7 @@ const ContextMenu: React.FC<IContextMenuProps> = ({
   y = 0,
   arg,
 }) => {
-  const app = Application.theApp;
+  const app = Runtime.theApp;
   const [menus, setMenus] = useState<IMenuItem[]>([]);
   useEffect(() => {
     setMenus([...(app.$contextmenu.getMenus(id)?.(arg) ?? [])]);

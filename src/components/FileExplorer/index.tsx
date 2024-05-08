@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./index.less";
 import Tree, { ITreeNode } from "../Tree";
 import ContextMenu from "../ContextMenu";
-import { Application, IResource, ResourceManager } from "@/studio";
+import { Runtime, IResource, ResourceManager } from "@/studio";
 const resolveResource = (resource: IResource): ITreeNode => {
   if (resource.type === "resource") {
     const item = resource as IResource;
@@ -19,7 +19,7 @@ const resolveResource = (resource: IResource): ITreeNode => {
   }
 };
 const FileExplorer: React.FC = () => {
-  const app = Application.theApp;
+  const app = Runtime.theApp;
   const [nodes, setNodes] = useState<ITreeNode[]>([]);
   useEffect(() => {
     const resources = app.$resources.getResources();

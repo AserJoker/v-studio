@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "./index.less";
 import Horizontal from "../Horizontal";
-import { Application, ExplorerManager, IAction, IExplorer } from "@/studio";
+import { Runtime, ExplorerManager, IAction, IExplorer } from "@/studio";
 import Vertical from "../Vertical";
 import { classname } from "@/util";
 import { Divider } from "../Divider";
 const Explorer: React.FC = () => {
-  const theApp = Application.theApp;
+  const theApp = Runtime.theApp;
   const [current, setCurrent] = useState<string | undefined>(undefined);
   const [explorers, setExplorers] = useState(theApp.$explorers.getExplorers());
   const [explorerWidth, setExplorerWidth] = useState(20 * 16 + 48);

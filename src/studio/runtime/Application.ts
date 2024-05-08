@@ -4,8 +4,8 @@ import { MenuManager } from "./MenuManager";
 import { ExplorerManager } from "./ExplorerManager";
 import { ContextMenuManager } from "./ContextMenuManager";
 
-export class Application {
-    public static theApp = new Application();
+export class Runtime {
+    public static theApp = new Runtime();
     public $bus = new EventBus();
 
     public $resources = new ResourceManager(this.$bus);
