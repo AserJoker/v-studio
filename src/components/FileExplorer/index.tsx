@@ -22,7 +22,7 @@ const FileExplorer: React.FC = () => {
   const app = Runtime.theApp;
   const [nodes, setNodes] = useState<ITreeNode[]>([]);
   useEffect(() => {
-    const resources = app.$resources.getResources();
+    const resources = app.$resource.getResources();
     setNodes(resources.map((r) => resolveResource(r)));
     return app.$bus.on(ResourceManager.EVENT_RESOURCE_CHANGE, () => {
       setNodes(resources.map((r) => resolveResource(r)));
@@ -43,7 +43,7 @@ const FileExplorer: React.FC = () => {
           setOnContextMenuItem([]);
         }}
         onDrop={(target, src) => {
-          app.$resources.move(src.join("#"), target.join("#"));
+          app.$resource.move(src.join("#"), target.join("#"));
         }}
         onContextMenu={(e, path) => {
           setContextMenuPos({ x: e.clientX, y: e.clientY });

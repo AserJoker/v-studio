@@ -10,7 +10,7 @@ interface ITreeNodeProps extends ITreeNode {
   path: string[];
   onContextMenu?: (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    path?: string[]
+    path?: string[],
   ) => void;
   onDrop?: (src: string[], item: string[]) => void;
   onDragStart?: () => void;
@@ -22,7 +22,7 @@ export interface ITreeProps {
   nodes: ITreeNode[];
   onContextMenu?: (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    path?: string[]
+    path?: string[],
   ) => void;
   onDrop?: (src: string[], item: string[]) => void;
   dragable?: boolean;

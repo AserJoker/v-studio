@@ -11,7 +11,7 @@ const Menu: React.FC = () => {
       theApp.$bus.on(MenuManager.EVENT_MENU_CHANGE, () => {
         setItems([...theApp.$menu.getMenus()]);
       }),
-    []
+    [],
   );
   const [activePath, setActivePath] = useState<string[]>([]);
   useEffect(() => {

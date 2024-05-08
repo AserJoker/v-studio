@@ -6,7 +6,7 @@ import { Application } from "@/components";
 import { Runtime as StudioApplication } from "@/studio";
 import FileExplorer from "@/components/FileExplorer";
 
-StudioApplication.theApp.$explorers.setExplorer({
+StudioApplication.theApp.$explorer.setExplorer({
   name: "File Explorer",
   icon: () => {
     return "\ue63e";
@@ -16,7 +16,7 @@ StudioApplication.theApp.$explorers.setExplorer({
   },
 });
 
-StudioApplication.theApp.$explorers.setExplorer({
+StudioApplication.theApp.$explorer.setExplorer({
   name: "Component Explorer",
   icon: () => {
     return "\ue6b2";
@@ -89,7 +89,7 @@ StudioApplication.theApp.$contextmenu.setMenus("file-explorer", () => {
     },
   ];
 });
-StudioApplication.theApp.$resources.add({
+StudioApplication.theApp.$resource.add({
   name: "/",
   type: "set",
   children: [
@@ -126,5 +126,5 @@ StudioApplication.theApp.$resources.add({
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Application />
-  </React.StrictMode>
+  </React.StrictMode>,
 );

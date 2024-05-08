@@ -8,11 +8,11 @@ import { Divider } from "../Divider";
 const Explorer: React.FC = () => {
   const theApp = Runtime.theApp;
   const [current, setCurrent] = useState<string | undefined>(undefined);
-  const [explorers, setExplorers] = useState(theApp.$explorers.getExplorers());
+  const [explorers, setExplorers] = useState(theApp.$explorer.getExplorers());
   const [explorerWidth, setExplorerWidth] = useState(20 * 16 + 48);
   useEffect(() => {
     return theApp.$bus.on(ExplorerManager.EVENT_EXPLORER_CHANGE, () => {
-      setExplorers(theApp.$explorers.getExplorers());
+      setExplorers(theApp.$explorer.getExplorers());
     });
   }, []);
   useEffect(() => {
@@ -22,7 +22,7 @@ const Explorer: React.FC = () => {
         if (action === "close") {
           setCurrent(undefined);
         }
-      }
+      },
     );
   }, []);
   const onClickItem = (item: IExplorer) => {
@@ -33,14 +33,14 @@ const Explorer: React.FC = () => {
     }
   };
   const explorer: IExplorer | undefined = current
-    ? theApp.$explorers.getExplorer(current)
+    ? theApp.$explorer.getExplorer(current)
     : undefined;
   const actions: IAction[] = [];
   const popupActions: IAction[] = [];
   if (explorer && explorer.actions) {
     actions.push(...explorer.actions.slice(0, 4));
     popupActions.push(
-      ...explorer.actions.slice(4, explorer.actions.length - 1)
+      ...explorer.actions.slice(4, explorer.actions.length - 1),
     );
   }
   actions.push({
@@ -52,7 +52,7 @@ const Explorer: React.FC = () => {
       <Horizontal fill>
         <Vertical layout="start" className="explorer-icon-list">
           {explorers.map((name) => {
-            const explorer = theApp.$explorers.getExplorer(name);
+            const explorer = theApp.$explorer.getExplorer(name);
             return (
               <div
                 className={classname("explorer-icon", {
@@ -85,7 +85,7 @@ const Explorer: React.FC = () => {
                           {
                             explorer: current,
                             action: act.name,
-                          }
+                          },
                         )
                       }
                     >

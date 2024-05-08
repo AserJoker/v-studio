@@ -1,4 +1,4 @@
 export interface IAction {
-    name: string;
-    icon: () => string;
+  name: string;
+  icon: () => string;
 }
