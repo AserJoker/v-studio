@@ -70,6 +70,10 @@ const FileExplorer: React.FC = () => {
         nodes={nodes}
         dragable
         activeNode={onContextMenuItem}
+        onDragStart={() => {
+          toggleContextMenuVisible(false);
+          setOnContextMenuItem([]);
+        }}
         onDrop={(srcp, itemp) => {
           const src = getItem(srcp);
           const parent = getItem(itemp.slice(0, itemp.length - 1));
