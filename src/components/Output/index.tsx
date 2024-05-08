@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import "./index.less";
 import { Divider } from "../Divider";
-const Console: React.FC = () => {
+const Output: React.FC = () => {
   const [height, setHeight] = useState(20 * 16);
   return (
-    <div className="console" style={{ height }}>
-      <div className="console-content">console</div>
+    <div className="output" style={{ height }}>
+      <div className="output-content">console</div>
       <Divider
         offset={height}
         direction="column-revert"
@@ -16,4 +16,4 @@ const Console: React.FC = () => {
     </div>
   );
 };
-export default Console;
+export default Output;

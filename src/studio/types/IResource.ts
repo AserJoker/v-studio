@@ -1,13 +1,14 @@
-export interface IResourceItem {
+export interface IResourceBase {
     name: string;
     type: "resource" | "set";
 }
-export interface IResource extends IResourceItem {
+export interface IResourceItem extends IResourceBase {
     data: unknown;
     type: "resource";
 }
-export interface IResourceSet extends IResourceItem {
+export interface IResourceSet extends IResourceBase {
     name: string;
     type: "set";
-    children: Record<string, IResourceItem>;
+    children: IResource[];
 }
+export type IResource = IResourceItem | IResourceSet;

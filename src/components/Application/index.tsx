@@ -8,7 +8,7 @@ import Header from "../Header";
 import Horizontal from "../Horizontal";
 import Explorer from "../Explorer";
 import Editor from "../Editor";
-import Console from "../Console";
+import Output from "../Output";
 import Toolbox from "../Toolbox";
 import StatusBar from "../StatusBar";
 export const Application: React.FC<{ theme?: string }> = ({
@@ -28,7 +28,7 @@ export const Application: React.FC<{ theme?: string }> = ({
           <Explorer />
           <Vertical className="content">
             <Editor />
-            <Console />
+            <Output />
           </Vertical>
           <Toolbox />
         </Horizontal>

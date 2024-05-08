@@ -1,65 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./index.less";
 import Tree, { ITreeNode } from "../Tree";
 import ContextMenu from "../ContextMenu";
-const data: ITreeNode[] = [
-  {
-    name: "/",
-    content: () => "/",
-    children: [
-      {
-        name: "usr",
-        content: () => "usr",
-        children: [
-          {
-            name: "aserjoker",
-            content: () => "aserjoker",
-          },
-        ],
-      },
-      {
-        name: "lib",
-        content: () => "lib",
-        children: [
-          {
-            name: "x86",
-            content: () => "x86",
-          },
-          {
-            name: "x86_64",
-            content: () => "x86_64",
-          },
-        ],
-      },
-      {
-        name: "bin",
-        content: () => "bin",
-        children: [
-          {
-            name: "ls",
-            content: () => "ls",
-          },
-          {
-            name: "rm",
-            content: () => "rm",
-          },
-        ],
-      },
-    ],
-  },
-];
+import { Application, IResource, ResourceManager } from "@/studio";
+const resolveResource = (resource: IResource): ITreeNode => {
+  if (resource.type === "resource") {
+    const item = resource as IResource;
+    return {
+      name: item.name,
+      content: () => item.name,
+    };
+  } else {
+    return {
+      name: resource.name,
+      content: () => resource.name,
+      children: resource.children.map((r) => resolveResource(r)),
+    };
+  }
+};
 const FileExplorer: React.FC = () => {
-  const [nodes, setNodes] = useState(data);
-  const getItem = (path: string[]): ITreeNode | undefined => {
-    let item = nodes.find((n) => n.name === path[0]);
-    for (let index = 1; index < path.length; index++) {
-      if (!item || !item.children) {
-        return undefined;
-      }
-      item = item.children.find((c) => c.name === path[index]);
-    }
-    return item;
-  };
+  const app = Application.theApp;
+  const [nodes, setNodes] = useState<ITreeNode[]>([]);
+  useEffect(() => {
+    const resources = app.$resources.getResources();
+    setNodes(resources.map((r) => resolveResource(r)));
+    return app.$bus.on(ResourceManager.EVENT_RESOURCE_CHANGE, () => {
+      setNodes(resources.map((r) => resolveResource(r)));
+    });
+  }, []);
   const [isContextMenuVisible, toggleContextMenuVisible] = useState(false);
   const [contextMenuPos, setContextMenuPos] = useState({ x: 0, y: 0 });
   const [onContextMenuItem, setOnContextMenuItem] = useState<string[]>([]);
@@ -74,23 +42,8 @@ const FileExplorer: React.FC = () => {
           toggleContextMenuVisible(false);
           setOnContextMenuItem([]);
         }}
-        onDrop={(srcp, itemp) => {
-          const src = getItem(srcp);
-          const parent = getItem(itemp.slice(0, itemp.length - 1));
-          if (parent === src) {
-            return;
-          }
-          if (parent && parent.children && src && src.children) {
-            const index = parent.children.findIndex(
-              (c) => c.name === itemp[itemp.length - 1]
-            );
-            if (index !== -1) {
-              const item = parent.children[index];
-              parent.children.splice(index, 1);
-              src.children.push(item);
-              setNodes([...nodes]);
-            }
-          }
+        onDrop={(target, src) => {
+          app.$resources.move(src.join("#"), target.join("#"));
         }}
         onContextMenu={(e, path) => {
           setContextMenuPos({ x: e.clientX, y: e.clientY });

@@ -1,20 +1,20 @@
 import { EventBus } from "@/engine";
-import { IResourceItem, IResourceSet } from "../types";
+import { IResource, IResourceSet } from "../types";
 
 export class ResourceManager {
-    private resources: IResourceSet[] = [];
+    private resources: IResource[] = [];
     private $bus: EventBus;
     public constructor($bus: EventBus) {
         this.$bus = $bus;
     }
     public getResource(key: string) {
         const path = key.split('#');
-        let item: IResourceItem | undefined = this.resources.find(r => r.name === path[0]);
+        let item: IResource | undefined = this.resources.find(r => r.name === path[0]);
         for (let index = 1; index < path.length; index++) {
             if (!item || item.type === "resource") {
                 return undefined;
             }
-            item = (item as IResourceSet).children[path[index]];
+            item = item.children.find(c => c.name === path[index]);
         }
         return item;
     }
@@ -23,33 +23,37 @@ export class ResourceManager {
     }
     public remove(key: string) {
         const path = key.split('#');
-        const parent = this.getResource(path.slice(0, path.length - 1).join('.'));
+        const parent = this.getResource(path.slice(0, path.length - 1).join('#'));
         if (parent && parent.type === "set") {
-            const p = parent as IResourceSet;
-            delete p.children[path[path.length - 1]];
-            this.$bus.emit(ResourceManager.EVENT_RESOURCE_CHANGE);
-            return true;
+            const index = parent.children.findIndex(c => c.name === path[path.length - 1]);
+            if (index !== -1) {
+                parent.children.splice(index, 1);
+                this.$bus.emit(ResourceManager.EVENT_RESOURCE_CHANGE);
+                return true;
+            }
         }
         return false;
     }
-    public add(key: string, resource: IResourceItem) {
-        const path = key.split('#');
-        const parent = this.getResource(path.slice(0, path.length - 1).join('#'));
-        if (parent && parent.type === "set") {
-            const p = parent as IResourceSet;
-            p.children[path[path.length - 1]] = resource;
+    public add(resource: IResource, position?: string) {
+        if (position) {
+            const path = position.split('#');
+            const parent = this.getResource(path.slice(0, path.length - 1).join('#'));
+            if (parent && parent.type === "set") {
+                parent.children.push(resource);
+                this.$bus.emit(ResourceManager.EVENT_RESOURCE_CHANGE);
+            }
+        } else {
+            this.resources.push(resource);
             this.$bus.emit(ResourceManager.EVENT_RESOURCE_CHANGE);
         }
     }
-    public move(key: string, target: string) {
-        const item = this.getResource(key);
+    public move(src: string, target: string) {
+        const item = this.getResource(src);
         const set = this.getResource(target);
-        const path = key.split('#');
-        const name = path[path.length - 1];
         if (item && set && set.type === "set") {
             const p = set as IResourceSet;
-            p.children[name] = item;
-            this.remove(key);
+            p.children.push(item);
+            this.remove(src);
             this.$bus.emit(ResourceManager.EVENT_RESOURCE_CHANGE);
         }
     }

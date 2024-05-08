@@ -63,8 +63,7 @@ StudioApplication.theApp.$menu.setMenus([
   },
 ]);
 
-StudioApplication.theApp.$contextmenu.setMenus("file-explorer", (arg) => {
-  console.log(arg);
+StudioApplication.theApp.$contextmenu.setMenus("file-explorer", () => {
   return [
     {
       name: "create",
@@ -89,6 +88,39 @@ StudioApplication.theApp.$contextmenu.setMenus("file-explorer", (arg) => {
       displayName: "rename",
     },
   ];
+});
+StudioApplication.theApp.$resources.add({
+  name: "/",
+  type: "set",
+  children: [
+    {
+      name: "usr",
+      type: "set",
+      children: [
+        {
+          name: "aserjoker",
+          type: "resource",
+          data: "test",
+        },
+      ],
+    },
+    {
+      name: "lib",
+      type: "set",
+      children: [
+        {
+          name: "x64",
+          type: "resource",
+          data: "",
+        },
+        {
+          name: "x86_64",
+          type: "resource",
+          data: "",
+        },
+      ],
+    },
+  ],
 });
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
