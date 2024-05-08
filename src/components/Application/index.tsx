@@ -19,7 +19,10 @@ export const Application: React.FC<{ theme?: string }> = ({
   }, [theme]);
   return (
     <ConfigProvider>
-      <Vertical className="application">
+      <Vertical
+        className="application"
+        onContextMenu={(e) => e.preventDefault()}
+      >
         <Header />
         <Horizontal className="body">
           <Explorer />

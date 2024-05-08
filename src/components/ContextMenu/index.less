@@ -1,0 +1,22 @@
+.context-menu {
+  display: flex;
+  z-index: 999;
+  position: fixed;
+  --menu-background-color: var(--color-lightblack3);
+  background-color: var(--menu-background-color);
+  border: 1px solid var(--menu-border-color);
+  padding: 0.5rem 0.125rem;
+  .menu-item.root {
+    min-width: 8rem;
+    border-radius: 0.25rem;
+    .menu-item-title {
+      justify-content: space-between;
+      padding: 0 1rem;
+    }
+    .menu-item {
+      .menu-item-title {
+        padding: 0rem;
+      }
+    }
+  }
+}

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./index.less";
 import Tree, { ITreeNode } from "../Tree";
+import ContextMenu from "../ContextMenu";
 const data: ITreeNode[] = [
   {
     name: "/",
@@ -59,11 +60,16 @@ const FileExplorer: React.FC = () => {
     }
     return item;
   };
+  const [isContextMenuVisible, toggleContextMenuVisible] = useState(false);
+  const [contextMenuPos, setContextMenuPos] = useState({ x: 0, y: 0 });
+  const [onContextMenuItem, setOnContextMenuItem] = useState<string[]>([]);
+  const [contextMenuArg, setContextMenuArg] = useState<unknown>(undefined);
   return (
     <div className="file-explorer">
       <Tree
         nodes={nodes}
         dragable
+        activeNode={onContextMenuItem}
         onDrop={(srcp, itemp) => {
           const src = getItem(srcp);
           const parent = getItem(itemp.slice(0, itemp.length - 1));
@@ -82,6 +88,26 @@ const FileExplorer: React.FC = () => {
             }
           }
         }}
+        onContextMenu={(e, path) => {
+          setContextMenuPos({ x: e.clientX, y: e.clientY });
+          toggleContextMenuVisible(true);
+          setContextMenuArg(path);
+          if (path) {
+            setOnContextMenuItem(path);
+          }
+          e.preventDefault();
+        }}
+      />
+      <ContextMenu
+        id="file-explorer"
+        visible={isContextMenuVisible}
+        x={contextMenuPos.x}
+        y={contextMenuPos.y}
+        onClose={() => {
+          toggleContextMenuVisible(false);
+          setOnContextMenuItem([]);
+        }}
+        arg={contextMenuArg}
       />
     </div>
   );

@@ -6,7 +6,7 @@ import { Application } from "@/components";
 import { Application as StudioApplication } from "@/studio";
 import FileExplorer from "@/components/FileExplorer";
 
-StudioApplication.theApp.setExplorer({
+StudioApplication.theApp.$explorers.setExplorer({
   name: "File Explorer",
   icon: () => {
     return "\ue63e";
@@ -16,7 +16,7 @@ StudioApplication.theApp.setExplorer({
   },
 });
 
-StudioApplication.theApp.setExplorer({
+StudioApplication.theApp.$explorers.setExplorer({
   name: "Component Explorer",
   icon: () => {
     return "\ue6b2";
@@ -26,7 +26,7 @@ StudioApplication.theApp.setExplorer({
   },
 });
 
-StudioApplication.theApp.setMenus([
+StudioApplication.theApp.$menu.setMenus([
   {
     name: "File",
     children: [
@@ -62,6 +62,34 @@ StudioApplication.theApp.setMenus([
     ],
   },
 ]);
+
+StudioApplication.theApp.$contextmenu.setMenus("file-explorer", (arg) => {
+  console.log(arg);
+  return [
+    {
+      name: "create",
+      displayName: "create...",
+      children: [
+        {
+          name: "file",
+          displayName: "create file",
+        },
+        {
+          name: "dir",
+          displayName: "create dir",
+        },
+      ],
+    },
+    {
+      name: "remove",
+      displayName: "remove",
+    },
+    {
+      name: "rename",
+      displayName: "rename",
+    },
+  ];
+});
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

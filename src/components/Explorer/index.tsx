@@ -1,23 +1,23 @@
 import React, { useEffect, useState } from "react";
 import "./index.less";
 import Horizontal from "../Horizontal";
-import { Application, IAction, IExplorer } from "@/studio";
+import { Application, ExplorerManager, IAction, IExplorer } from "@/studio";
 import Vertical from "../Vertical";
 import { classname } from "@/util";
 import { Divider } from "../Divider";
 const Explorer: React.FC = () => {
   const theApp = Application.theApp;
   const [current, setCurrent] = useState<string | undefined>(undefined);
-  const [explorers, setExplorers] = useState(theApp.getExplorers());
+  const [explorers, setExplorers] = useState(theApp.$explorers.getExplorers());
   const [explorerWidth, setExplorerWidth] = useState(20 * 16 + 48);
   useEffect(() => {
-    return theApp.$bus.on(Application.EVENT_EXPLORER_CHANGE, () => {
-      setExplorers(theApp.getExplorers());
+    return theApp.$bus.on(ExplorerManager.EVENT_EXPLORER_CHANGE, () => {
+      setExplorers(theApp.$explorers.getExplorers());
     });
   }, []);
   useEffect(() => {
     return theApp.$bus.on(
-      Application.EVENT_EXPLORER_ACTION_CLICK,
+      ExplorerManager.EVENT_EXPLORER_ACTION_CLICK,
       ({ action }: { action: string }) => {
         if (action === "close") {
           setCurrent(undefined);
@@ -33,7 +33,7 @@ const Explorer: React.FC = () => {
     }
   };
   const explorer: IExplorer | undefined = current
-    ? theApp.getExplorer(current)
+    ? theApp.$explorers.getExplorer(current)
     : undefined;
   const actions: IAction[] = [];
   const popupActions: IAction[] = [];
@@ -52,7 +52,7 @@ const Explorer: React.FC = () => {
       <Horizontal fill>
         <Vertical layout="start" className="explorer-icon-list">
           {explorers.map((name) => {
-            const explorer = theApp.getExplorer(name);
+            const explorer = theApp.$explorers.getExplorer(name);
             return (
               <div
                 className={classname("explorer-icon", {
@@ -81,7 +81,7 @@ const Explorer: React.FC = () => {
                       key={act.name}
                       onClick={() =>
                         theApp.$bus.emit(
-                          Application.EVENT_EXPLORER_ACTION_CLICK,
+                          ExplorerManager.EVENT_EXPLORER_ACTION_CLICK,
                           {
                             explorer: current,
                             action: act.name,
