@@ -45,6 +45,9 @@ export default {
   explorer: {
     resources: {
       name: "RESOURCES",
+      btn: {
+        new: "New Project",
+      },
     },
   },
 };

@@ -4,6 +4,7 @@ import Tree, { ITreeNode } from "../Tree";
 import ContextMenu from "../ContextMenu";
 import { Runtime, ResourceManager } from "@/runtime";
 import { IResource } from "@/types";
+import Button from "../Button";
 const resolveResource = (resource: IResource): ITreeNode => {
   if (resource.type === "resource") {
     const item = resource as IResource;
@@ -35,38 +36,46 @@ const ResourceExplorer: React.FC = () => {
   const [contextMenuArg, setContextMenuArg] = useState<unknown>(undefined);
   return (
     <div className="resource-explorer">
-      <Tree
-        nodes={nodes}
-        dragable
-        activeNode={onContextMenuItem}
-        onDragStart={() => {
-          toggleContextMenuVisible(false);
-          setOnContextMenuItem([]);
-        }}
-        onDrop={(target, src) => {
-          app.$resource.move(src.join("#"), target.join("#"));
-        }}
-        onContextMenu={(e, path) => {
-          setContextMenuPos({ x: e.clientX, y: e.clientY });
-          toggleContextMenuVisible(true);
-          setContextMenuArg(path);
-          if (path) {
-            setOnContextMenuItem(path);
-          }
-          e.preventDefault();
-        }}
-      />
-      <ContextMenu
-        id="resources"
-        visible={isContextMenuVisible}
-        x={contextMenuPos.x}
-        y={contextMenuPos.y}
-        onClose={() => {
-          toggleContextMenuVisible(false);
-          setOnContextMenuItem([]);
-        }}
-        arg={contextMenuArg}
-      />
+      {nodes.length === 0 ? (
+        <Button className="create-project-button">
+          {Runtime.theApp.$locale.get("explorer.resources.btn.new")}
+        </Button>
+      ) : (
+        <>
+          <Tree
+            nodes={nodes}
+            dragable
+            activeNode={onContextMenuItem}
+            onDragStart={() => {
+              toggleContextMenuVisible(false);
+              setOnContextMenuItem([]);
+            }}
+            onDrop={(target, src) => {
+              app.$resource.move(src.join("#"), target.join("#"));
+            }}
+            onContextMenu={(e, path) => {
+              setContextMenuPos({ x: e.clientX, y: e.clientY });
+              toggleContextMenuVisible(true);
+              setContextMenuArg(path);
+              if (path) {
+                setOnContextMenuItem(path);
+              }
+              e.preventDefault();
+            }}
+          />
+          <ContextMenu
+            id="resources"
+            visible={isContextMenuVisible}
+            x={contextMenuPos.x}
+            y={contextMenuPos.y}
+            onClose={() => {
+              toggleContextMenuVisible(false);
+              setOnContextMenuItem([]);
+            }}
+            arg={contextMenuArg}
+          />
+        </>
+      )}
     </div>
   );
 };

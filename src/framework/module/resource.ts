@@ -27,7 +27,6 @@ export default {
         }
       }
     );
-    Runtime.theApp.$resource.add({ type: "set", name: "/", children: [] });
     this.ready = true;
   },
 };

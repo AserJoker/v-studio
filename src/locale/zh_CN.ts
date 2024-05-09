@@ -45,6 +45,9 @@ export default {
   explorer: {
     resources: {
       name: "资源管理",
+      btn: {
+        new: "新建项目",
+      },
     },
   },
 };
