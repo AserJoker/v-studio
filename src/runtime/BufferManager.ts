@@ -1,5 +1,5 @@
-import { EventBus } from "@/engine";
-import { IResourceItem } from "../types";
+import { EventBus } from "@/util";
+import { IResourceItem } from "@/types";
 
 export class BufferManager {
   private $bus: EventBus;

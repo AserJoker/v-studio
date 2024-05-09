@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import "./index.less";
 import Tree, { ITreeNode } from "../Tree";
 import ContextMenu from "../ContextMenu";
-import { Runtime, IResource, ResourceManager } from "@/studio";
+import { Runtime, ResourceManager } from "@/runtime";
+import { IResource } from "@/types";
 const resolveResource = (resource: IResource): ITreeNode => {
   if (resource.type === "resource") {
     const item = resource as IResource;
@@ -18,7 +19,7 @@ const resolveResource = (resource: IResource): ITreeNode => {
     };
   }
 };
-const FileExplorer: React.FC = () => {
+const ResourceExplorer: React.FC = () => {
   const app = Runtime.theApp;
   const [nodes, setNodes] = useState<ITreeNode[]>([]);
   useEffect(() => {
@@ -33,7 +34,7 @@ const FileExplorer: React.FC = () => {
   const [onContextMenuItem, setOnContextMenuItem] = useState<string[]>([]);
   const [contextMenuArg, setContextMenuArg] = useState<unknown>(undefined);
   return (
-    <div className="file-explorer">
+    <div className="resource-explorer">
       <Tree
         nodes={nodes}
         dragable
@@ -56,7 +57,7 @@ const FileExplorer: React.FC = () => {
         }}
       />
       <ContextMenu
-        id="file-explorer"
+        id="resources"
         visible={isContextMenuVisible}
         x={contextMenuPos.x}
         y={contextMenuPos.y}
@@ -69,4 +70,4 @@ const FileExplorer: React.FC = () => {
     </div>
   );
 };
-export default FileExplorer;
+export default ResourceExplorer;

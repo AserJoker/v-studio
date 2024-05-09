@@ -1,4 +1,4 @@
-import { IListener } from "../types";
+import { IListener } from "../engine/types";
 
 export class EventBus implements IListener {
   private listeners: Record<

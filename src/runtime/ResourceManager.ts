@@ -1,5 +1,5 @@
-import { EventBus } from "@/engine";
-import { IResource, IResourceSet } from "../types";
+import { EventBus } from "@/util";
+import { IResource, IResourceSet } from "@/types";
 
 export class ResourceManager {
   private resources: IResource[] = [];
@@ -10,7 +10,7 @@ export class ResourceManager {
   public getResource(key: string) {
     const path = key.split("#");
     let item: IResource | undefined = this.resources.find(
-      (r) => r.name === path[0],
+      (r) => r.name === path[0]
     );
     for (let index = 1; index < path.length; index++) {
       if (!item || item.type === "resource") {
@@ -28,7 +28,7 @@ export class ResourceManager {
     const parent = this.getResource(path.slice(0, path.length - 1).join("#"));
     if (parent && parent.type === "set") {
       const index = parent.children.findIndex(
-        (c) => c.name === path[path.length - 1],
+        (c) => c.name === path[path.length - 1]
       );
       if (index !== -1) {
         parent.children.splice(index, 1);

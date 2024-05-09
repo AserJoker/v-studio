@@ -1,7 +1,6 @@
-import { clone, reactive } from "../util";
 import { IComponent, ISchemaNode, IComputed, IRenderer } from "../types";
 import React from "react";
-import { EventBus } from "./EventBus";
+import { EventBus, clone, reactive } from "@/util";
 
 interface Watcher {
   key: string | RegExp;
@@ -33,7 +32,7 @@ export class Component<T = any, C extends Record<string, unknown> = {}>
   public constructor(
     state: T = {} as T,
     computed?: IComputed<T, C>,
-    key?: string,
+    key?: string
   ) {
     this.$store = clone(state);
     if (computed) {
@@ -43,33 +42,33 @@ export class Component<T = any, C extends Record<string, unknown> = {}>
   }
   public on<T = unknown>(
     type: string,
-    cb: (arg: T, key?: string | undefined) => void,
+    cb: (arg: T, key?: string | undefined) => void
   ): () => void {
     return Component.$listener.on(type, cb);
   }
   public off<T = unknown>(
     type: string,
-    cb: (arg: T, key?: string | undefined) => void,
+    cb: (arg: T, key?: string | undefined) => void
   ): void {
     return Component.$listener.off(type, cb);
   }
   public once<T = unknown>(
     type: string,
-    cb: (arg: T, key?: string | undefined) => void,
+    cb: (arg: T, key?: string | undefined) => void
   ): void {
     return Component.$listener.once(type, cb);
   }
   public emit<T = unknown>(
     type: string,
     arg?: T | undefined,
-    key?: string | undefined,
+    key?: string | undefined
   ): void {
     return Component.$listener.emit(type, arg, key ?? this.key);
   }
   public field<K extends keyof T, CC extends Record<string, unknown>>(
     field: K,
     computed?: IComputed<T[K], CC>,
-    key?: string,
+    key?: string
   ): IComponent<T[K], CC> {
     return new (class extends Component<T[K], CC> {
       private parent: IComponent;
@@ -118,7 +117,7 @@ export class Component<T = any, C extends Record<string, unknown> = {}>
         get: (_, key: string): unknown => {
           return this.computedDescriptor[key]?.(this as IComponent<T, C>);
         },
-      },
+      }
     ) as C;
   }
   public get key() {
@@ -127,7 +126,7 @@ export class Component<T = any, C extends Record<string, unknown> = {}>
 
   public render(
     schema: ISchemaNode,
-    slot?: string,
+    slot?: string
   ): JSX.Element | string | null {
     if (slot) {
       const slots = schema.slots?.[slot] ?? [];
@@ -149,7 +148,7 @@ export class Component<T = any, C extends Record<string, unknown> = {}>
             $comp = new Component(slot.state, undefined, slot.key);
           }
           return $comp.render(slot);
-        }),
+        })
       );
     } else {
       const renderer = schema.renderer;

@@ -1,5 +1,5 @@
-import { EventBus } from "@/engine";
-import { IMenuItem } from "../types";
+import { EventBus } from "@/util";
+import { IMenuItem } from "@/types";
 
 export class ContextMenuManager {
   private $bus: EventBus;
@@ -9,7 +9,7 @@ export class ContextMenuManager {
   private menus: Record<string, (items?: unknown) => IMenuItem[]> = {};
 
   public getMenus(id: string) {
-    return this.menus[id] ?? [];
+    return this.menus[id];
   }
 
   public setMenus(id: string, menus: (items?: unknown) => IMenuItem[]) {

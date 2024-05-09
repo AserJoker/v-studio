@@ -1,7 +1,8 @@
-import { Runtime, IMenuItem, MenuManager } from "@/studio";
+import { Runtime, MenuManager } from "@/runtime";
 import React, { useEffect, useState } from "react";
 import "./index.less";
 import MenuItem from "../MenuItem";
+import { IMenuItem } from "@/types";
 
 const Menu: React.FC = () => {
   const theApp = Runtime.theApp;
@@ -11,7 +12,7 @@ const Menu: React.FC = () => {
       theApp.$bus.on(MenuManager.EVENT_MENU_CHANGE, () => {
         setItems([...theApp.$menu.getMenus()]);
       }),
-    [],
+    []
   );
   const [activePath, setActivePath] = useState<string[]>([]);
   useEffect(() => {
@@ -26,19 +27,27 @@ const Menu: React.FC = () => {
   return (
     <div className="menu" onClick={(e) => e.stopPropagation()}>
       {items.map((item, index) => (
-        <MenuItem
-          item={item}
+        <div
           key={item.name ?? `${index}`}
-          onActive={(act) => {
-            setActivePath([...act]);
+          onMouseEnter={() => {
+            if (activePath.length !== 0) {
+              setActivePath([item.name as string]);
+            }
           }}
-          active={activePath}
-          trigger="click"
-          onClick={(path) => {
-            theApp.$bus.emit(MenuManager.EVENT_MENU_CLICK, path);
-          }}
-          popupDirection="bottom"
-        />
+        >
+          <MenuItem
+            item={item}
+            onActive={(act) => {
+              setActivePath([...act]);
+            }}
+            active={activePath}
+            trigger="click"
+            onClick={(path) => {
+              theApp.$bus.emit(MenuManager.EVENT_MENU_CLICK, path);
+            }}
+            popupDirection="bottom"
+          />
+        </div>
       ))}
     </div>
   );

@@ -1,5 +1,5 @@
-import { EventBus } from "@/engine";
-import { IExplorer } from "../types";
+import { EventBus } from "@/util";
+import { IExplorer } from "@/types";
 
 export class ExplorerManager {
   private $bus: EventBus;

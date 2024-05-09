@@ -1,7 +1,8 @@
-import { Runtime, ContextMenuManager, IMenuItem } from "@/studio";
+import { Runtime, ContextMenuManager } from "@/runtime";
 import React, { useEffect, useState } from "react";
 import "./index.less";
 import MenuItem from "../MenuItem";
+import { IMenuItem } from "@/types";
 export interface IContextMenuProps {
   id: string;
   visible?: boolean;
@@ -21,11 +22,13 @@ const ContextMenu: React.FC<IContextMenuProps> = ({
   const app = Runtime.theApp;
   const [menus, setMenus] = useState<IMenuItem[]>([]);
   useEffect(() => {
-    setMenus([...(app.$contextmenu.getMenus(id)?.(arg) ?? [])]);
+    const getter = app.$contextmenu.getMenus(id);
+    setMenus([...((getter && getter(arg)) ?? [])]);
   }, [arg]);
   useEffect(() => {
     return app.$bus.on(ContextMenuManager.EVENT_MENU_CHANGE, () => {
-      setMenus([...(app.$contextmenu.getMenus(id)?.(arg) ?? [])]);
+      const getter = app.$contextmenu.getMenus(id);
+      setMenus([...((getter && getter(arg)) ?? [])]);
     });
   }, []);
   const [activePath, setActivePath] = useState<string[]>([]);
@@ -38,6 +41,9 @@ const ContextMenu: React.FC<IContextMenuProps> = ({
       document.removeEventListener("click", onBlur);
     };
   }, []);
+  if (menus.filter((m) => m.visible?.() !== false).length === 0) {
+    return null;
+  }
   return (
     <div
       className="context-menu"
@@ -61,7 +67,8 @@ const ContextMenu: React.FC<IContextMenuProps> = ({
               onClick={(path) => {
                 app.$bus.emit(ContextMenuManager.EVENT_MENU_CLICK, {
                   id,
-                  arg: path,
+                  action: path,
+                  item: arg,
                 });
                 onClose?.();
               }}

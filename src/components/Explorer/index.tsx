@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import "./index.less";
 import Horizontal from "../Horizontal";
-import { Runtime, ExplorerManager, IAction, IExplorer } from "@/studio";
+import { Runtime, ExplorerManager } from "@/runtime";
 import Vertical from "../Vertical";
 import { classname } from "@/util";
 import { Divider } from "../Divider";
+import { IAction, IExplorer } from "@/types";
 const Explorer: React.FC = () => {
   const theApp = Runtime.theApp;
   const [current, setCurrent] = useState<string | undefined>(undefined);
@@ -22,7 +23,7 @@ const Explorer: React.FC = () => {
         if (action === "close") {
           setCurrent(undefined);
         }
-      },
+      }
     );
   }, []);
   const onClickItem = (item: IExplorer) => {
@@ -40,7 +41,7 @@ const Explorer: React.FC = () => {
   if (explorer && explorer.actions) {
     actions.push(...explorer.actions.slice(0, 4));
     popupActions.push(
-      ...explorer.actions.slice(4, explorer.actions.length - 1),
+      ...explorer.actions.slice(4, explorer.actions.length - 1)
     );
   }
   actions.push({
@@ -72,7 +73,7 @@ const Explorer: React.FC = () => {
             style={{ width: `${explorerWidth - 48}px` }}
           >
             <div className="explorer-content-title">
-              <div>{current}</div>
+              <div>{Runtime.theApp.$locale.get(current) ?? current}</div>
               <div className="explorer-action-bar">
                 {actions.map((act) => {
                   return (
@@ -85,7 +86,7 @@ const Explorer: React.FC = () => {
                           {
                             explorer: current,
                             action: act.name,
-                          },
+                          }
                         )
                       }
                     >

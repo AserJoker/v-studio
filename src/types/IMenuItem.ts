@@ -3,4 +3,5 @@ export interface IMenuItem {
   displayName?: string;
   disable?: boolean;
   children?: IMenuItem[];
+  visible?: () => boolean;
 }

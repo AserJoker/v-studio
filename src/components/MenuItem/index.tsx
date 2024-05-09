@@ -1,7 +1,8 @@
-import { IMenuItem } from "@/studio";
+import { Runtime } from "@/runtime";
 import { classname } from "@/util";
 import { useEffect, useState } from "react";
 import "./index.less";
+import { IMenuItem } from "@/types";
 export interface IMenuItemProps {
   item: IMenuItem;
   onClick?: (path: string[]) => void;
@@ -30,6 +31,9 @@ const MenuItem: React.FC<IMenuItemProps> = ({
     }
   }, [active]);
   const children = item.children ?? [];
+  if (item.visible && !item.visible()) {
+    return null;
+  }
   return (
     <div
       className={classname("menu-item", { root: path.length === 1 })}
@@ -59,7 +63,11 @@ const MenuItem: React.FC<IMenuItemProps> = ({
       }}
     >
       <div className="menu-item-title">
-        <span>{item.displayName ?? item.name}</span>
+        <span>
+          {Runtime.theApp.$locale.get(
+            item.displayName ?? (item.name as string)
+          )}
+        </span>
         <span>
           {item.children?.length && popupDirection === "right" && ">"}
         </span>
