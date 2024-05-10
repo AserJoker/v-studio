@@ -50,4 +50,12 @@ export default {
       },
     },
   },
+  btn: {
+    ok: {
+      name: "Ok",
+    },
+    cancel: {
+      name: "Cancel",
+    },
+  },
 };

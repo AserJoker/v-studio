@@ -5,6 +5,7 @@ import ContextMenu from "../ContextMenu";
 import { Runtime, ResourceManager } from "@/runtime";
 import { IResource } from "@/types";
 import Button from "../Button";
+import Modal from "../Modal";
 const resolveResource = (resource: IResource): ITreeNode => {
   if (resource.type === "resource") {
     const item = resource as IResource;
@@ -34,12 +35,46 @@ const ResourceExplorer: React.FC = () => {
   const [contextMenuPos, setContextMenuPos] = useState({ x: 0, y: 0 });
   const [onContextMenuItem, setOnContextMenuItem] = useState<string[]>([]);
   const [contextMenuArg, setContextMenuArg] = useState<unknown>(undefined);
+  const [isModalVisible, setModalVisible] = useState(false);
   return (
     <div className="resource-explorer">
       {nodes.length === 0 ? (
-        <Button className="create-project-button">
-          {Runtime.theApp.$locale.get("explorer.resources.btn.new")}
-        </Button>
+        <>
+          <div className="action-wrapper">
+            <Button
+              className="create-project-button"
+              onClick={() => {
+                setModalVisible(true);
+              }}
+            >
+              {Runtime.theApp.$locale.get("explorer.resources.btn.new")}
+            </Button>
+          </div>
+          <Modal
+            visible={isModalVisible}
+            onClose={() => {
+              setModalVisible(false);
+            }}
+            title={Runtime.theApp.$locale.get("explorer.resources.btn.new")}
+          >
+            <div className="resource-explorer-create-project-modal">
+              <div className="content"></div>
+              <div className="action-bar">
+                <Button
+                  className="action"
+                  onClick={() => {
+                    setModalVisible(false);
+                  }}
+                >
+                  {Runtime.theApp.$locale.get("btn.cancel.name")}
+                </Button>
+                <Button className="action">
+                  {Runtime.theApp.$locale.get("btn.ok.name")}
+                </Button>
+              </div>
+            </div>
+          </Modal>
+        </>
       ) : (
         <>
           <Tree

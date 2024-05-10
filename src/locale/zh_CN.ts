@@ -50,4 +50,12 @@ export default {
       },
     },
   },
+  btn: {
+    ok: {
+      name: "确定",
+    },
+    cancel: {
+      name: "取消",
+    },
+  },
 };

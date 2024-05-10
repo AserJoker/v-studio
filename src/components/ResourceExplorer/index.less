@@ -7,9 +7,24 @@
     padding-right: 1rem;
     width: 100%;
   }
-  .create-project-button {
-    width: 80%;
-    margin-left: 10%;
-    margin-top: 0.8rem;
+  .action-wrapper {
+    padding: 0.8rem 10%;
+    .create-project-button {
+      width: 100%;
+    }
+  }
+  &-create-project-modal {
+    display: flex;
+    flex-direction: column;
+    .action-bar {
+      position: absolute;
+      bottom: 1rem;
+      right: 1rem;
+      display: flex;
+      justify-content: flex-end;
+      .action:first-child{
+        margin-right: 1rem;
+      }
+    }
   }
 }
