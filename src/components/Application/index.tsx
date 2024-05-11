@@ -10,6 +10,7 @@ import Output from "../Output";
 import Toolbox from "../Toolbox";
 import StatusBar from "../StatusBar";
 import { LocaleManager, Runtime } from "@/runtime";
+import ModalContainer from "../ModalContainer";
 export const Application: React.FC<{ theme?: string }> = ({
   theme = "monokai",
 }) => {
@@ -23,17 +24,23 @@ export const Application: React.FC<{ theme?: string }> = ({
     });
   }, []);
   return (
-    <Vertical className="application" onContextMenu={(e) => e.preventDefault()}>
-      <Header />
-      <Horizontal className="body">
-        <Explorer />
-        <Vertical className="content">
-          <Editor />
-          <Output />
-        </Vertical>
-        <Toolbox />
-      </Horizontal>
-      <StatusBar />
-    </Vertical>
+    <>
+      <Vertical
+        className="application"
+        onContextMenu={(e) => e.preventDefault()}
+      >
+        <Header />
+        <Horizontal className="body">
+          <Explorer />
+          <Vertical className="content">
+            <Editor />
+            <Output />
+          </Vertical>
+          <Toolbox />
+        </Horizontal>
+        <StatusBar />
+      </Vertical>
+      <ModalContainer />
+    </>
   );
 };

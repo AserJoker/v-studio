@@ -5,3 +5,4 @@ export * from "./ExplorerManager";
 export * from "./ContextMenuManager";
 export * from "./BufferManager";
 export * from "./LocaleManager";
+export * from "./ProjectManager";

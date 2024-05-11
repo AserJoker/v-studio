@@ -1,0 +1,21 @@
+.form {
+  display: flex;
+  flex-wrap: wrap;
+  &-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding:0.25rem 0.5rem;
+    &-label {
+      margin-right: 1rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 4rem;
+    }
+    &-content {
+      flex-grow: 1;
+      width: calc(100% - 4rem);
+    }
+  }
+}

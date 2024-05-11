@@ -10,7 +10,7 @@ interface IInputProps {
   stuffix?: () => JSX.Element | string | null;
 }
 const Input: React.FC<IInputProps> = ({
-  value,
+  value = "",
   onChange,
   className,
   children,
@@ -26,7 +26,7 @@ const Input: React.FC<IInputProps> = ({
       {prefix && prefix()}
       <input
         value={current}
-        onInput={(e) => {
+        onChange={(e) => {
           const value = e.currentTarget.value;
           if (onChange) {
             onChange(value);

@@ -58,4 +58,9 @@ export default {
       name: "取消",
     },
   },
+  modal: {
+    new_project: {
+      name: "新建项目",
+    },
+  },
 };

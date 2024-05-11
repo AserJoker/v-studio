@@ -38,7 +38,11 @@ const Menu: React.FC = () => {
           <MenuItem
             item={item}
             onActive={(act) => {
-              setActivePath([...act]);
+              if (act.join("#") === activePath.join("#") && act.length === 1) {
+                setActivePath([]);
+              } else {
+                setActivePath([...act]);
+              }
             }}
             active={activePath}
             trigger="click"

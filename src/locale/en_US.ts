@@ -58,4 +58,9 @@ export default {
       name: "Cancel",
     },
   },
+  modal: {
+    new_project: {
+      name: "New Project",
+    },
+  },
 };

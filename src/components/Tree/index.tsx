@@ -41,7 +41,7 @@ const TreeNode: React.FC<ITreeNodeProps> = ({
   ...node
 }) => {
   const { children, content } = node;
-  const [isFolder, toggleFolder] = useState(false);
+  const [isFolder, toggleFolder] = useState(true);
   const [active, toggleActive] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   return (

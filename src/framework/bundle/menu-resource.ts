@@ -28,7 +28,7 @@ export default (path?: string[]) => {
     {
       name: "remove",
       displayName: "context.resource.remove.name",
-      visible: () => path !== undefined,
+      visible: () => path !== undefined && path.length !== 1,
     },
   ];
 };
